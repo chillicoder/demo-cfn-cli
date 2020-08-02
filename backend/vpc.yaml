@@ -1,7 +1,13 @@
 ---
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: |
+  Creates VPC resources including:
+    - Public and private subnets
+    - Public and private security groups
+    - Internet and NAT gateways
+
 Parameters:
-  Environment:
-    Type: String
   DbPort:
     Type: Number
     Default: 3306
@@ -28,8 +34,6 @@ Resources:
       EnableDnsSupport: true
       InstanceTenancy: default
       Tags:
-        - Key: environment
-          Value: !Ref Environment
         - Key: Name
           Value: !Sub "${AWS::StackName}-vpc"
 
@@ -37,8 +41,6 @@ Resources:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
-        - Key: environment
-          Value: !Ref Environment
         - Key: Name
           Value: !Sub "${AWS::StackName}-igw"
 
@@ -60,8 +62,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-PublicSubnetA"
-        - Key: environment
-          Value: !Ref Environment
 
   PublicSubnetB:
     Type: AWS::EC2::Subnet
@@ -75,8 +75,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-PublicSubnetB"
-        - Key: environment
-          Value: !Ref Environment
 
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
@@ -116,8 +114,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-eip"
-        - Key: environment
-          Value: !Ref Environment
 
   NatGateway:
     DependsOn: VPCGatewayAttachment
@@ -128,8 +124,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-nat-gw"
-        - Key: environment
-          Value: !Ref Environment
 
 # 
 # Private subnets
@@ -147,8 +141,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-PrivateSubnetA"
-        - Key: environment
-          Value: !Ref Environment
 
   PrivateSubnetB:
     Type: AWS::EC2::Subnet
@@ -162,8 +154,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${AWS::StackName}-PrivateSubnetB"
-        - Key: environment
-          Value: !Ref Environment
 
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
@@ -203,18 +193,12 @@ Resources:
           FromPort: 8080
           ToPort: 8080
           CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
 
   DbSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Enable containers ingress to DB
       VpcId: !Ref DeploymentVPC
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
 
   DbSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
@@ -235,9 +219,6 @@ Resources:
           IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-      Tags:
-        - Key: Environment
-          Value: !Ref Environment
 
 Outputs:
   VPCCidrBlock:
@@ -259,9 +240,6 @@ Outputs:
 
   PrivateSubnetIdB:
     Value: !Ref PrivateSubnetB
-
-  Environment:
-    Value: !Ref Environment
 
   ContainerSecurityGroupRef:
     Value: !Ref ContainerSecurityGroup

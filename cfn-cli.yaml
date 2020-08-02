@@ -17,6 +17,8 @@ Blueprints:
   Default:
     Profile: default
     Region: us-east-1
+    Tags:
+      environment: default
 
   Develop:
     Profile: <profile_name_for_develop_account>
@@ -45,6 +47,5 @@ Stages:
       Template: backend/vpc.yaml
 
       Parameters:
-        Environment: development
         DbPort: 5432
 
