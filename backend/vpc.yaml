@@ -2,6 +2,9 @@
 Parameters:
   Environment:
     Type: String
+  DbPort:
+    Type: Number
+    Default: 3306
 
 Mappings:
   CidrMap:
@@ -190,7 +193,6 @@ Resources:
       SubnetId: !Ref PrivateSubnetB
       RouteTableId: !Ref PrivateRouteTable
 
-
   ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -218,8 +220,8 @@ Resources:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       IpProtocol: tcp
-      FromPort: 3306
-      ToPort: 3306
+      FromPort: !Ref DbPort
+      ToPort: !Ref DbPort
       GroupId: !Ref DbSecurityGroup
       SourceSecurityGroupId: !Ref ContainerSecurityGroup
 
