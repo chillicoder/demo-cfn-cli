@@ -21,7 +21,7 @@ Blueprints:
       environment: default
 
   Develop:
-    Profile: <profile_name_for_develop_account>
+    Profile: masterbuilder
     Region: us-east-1
     Tags:
       Environment: Develop
@@ -41,8 +41,8 @@ Stages:
     Order: 1
 
     Vpc:
-      Extends: Default
-      StackName: vpc
+      Extends: Develop
+      StackName: connectivity
 
       Template: backend/vpc.yaml
 
